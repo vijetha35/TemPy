@@ -52,6 +52,8 @@ class Doctype(VoidTag):
 
     def to_code(self, pretty=False):
         return 'Doctype("%s")' % self.type_code
+    def setDoctype(self,doctype):
+        self.type_code= doctype
 
 
 class Html(Tag):
@@ -65,11 +67,18 @@ class Html(Tag):
         doctype = kwargs.pop('doctype', 'html')
         super().__init__(**kwargs)
         self.doctype = Doctype(doctype)
+        self.head = Head(head)
 
     def render(self, *args, **kwargs):
         """Override so each html page served have a doctype"""
         return self.doctype.render() + super().render(*args, **kwargs)
-
+    
+class Head(Tag):
+    __tag= 'head'
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.title = Title(title)
+        
 
 class A(Tag):
     __tag = 'a'
@@ -85,8 +94,11 @@ class Title(Tag):
     __tag = 'title'
 
     def __init__(self, title=None):
+        self.title =''
         super().__init__()
         self(title)
+    def setTitle(self,title):
+        self.title =title
 
 tags = {
     VoidTag: ['wbr', 'area', 'base', 'br', 'embed', 'img', 'hr', 'input', 'link', 'meta', 'param', 'source', 'track'],
